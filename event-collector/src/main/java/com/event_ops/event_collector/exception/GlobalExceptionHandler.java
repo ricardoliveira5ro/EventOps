@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestControllerAdvice
@@ -24,6 +25,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex) {
         List<String> details = List.of(ex.getClass().getSimpleName() + ": " + ex.getMessage());
 
-        return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "An unexpected error occurred", details), HttpStatus.BAD_REQUEST);
+        List<String> stackTrace = null;
+        if ("dev".equalsIgnoreCase(activeProfile)) {
+            stackTrace = Arrays.stream(ex.getStackTrace())
+                .map(StackTraceElement::toString)
+                .toList();
+        }
+
+        return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "An unexpected error occurred", details, stackTrace), HttpStatus.BAD_REQUEST);
     }
 }
