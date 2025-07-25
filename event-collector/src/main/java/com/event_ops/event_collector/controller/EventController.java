@@ -23,7 +23,7 @@ public class EventController {
 
     @PostMapping
     public ResponseEntity<String> processEvent(@Valid @RequestBody EventRequest eventRequest) {
-        eventService.processEvent(eventRequest);
+        eventService.pushEvent(eventRequest);
 
         return ResponseEntity.ok("Event received");
     }
