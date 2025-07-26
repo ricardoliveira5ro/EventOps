@@ -25,4 +25,14 @@ public class EventRequest {
 
     @NotNull
     private Instant timestamp;
+
+    @Override
+    public String toString() {
+        return "EventRequest{" +
+                "name='" + name + '\'' +
+                ", userId='" + userId + '\'' +
+                ", metadata=" + metadata +
+                ", timestamp=" + timestamp +
+                '}';
+    }
 }

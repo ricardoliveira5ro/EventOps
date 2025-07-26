@@ -5,10 +5,12 @@ import com.event_ops.event_collector.model.Event;
 import com.event_ops.event_collector.producer.EventProducer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class EventService {
 
     private final EventProducer eventProducer;
@@ -30,9 +32,10 @@ public class EventService {
 
         try {
             eventProducer.sendMessage("event-processor", objectMapper.writeValueAsString(event));
+            log.info("Event sent to topic 'event-processor': {}", event);
 
         } catch (JsonProcessingException e) {
-            System.err.println(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 }
