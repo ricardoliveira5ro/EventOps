@@ -9,3 +9,15 @@
 
 - Maven dependency `dotenv-java`
 - Import variables on application runner
+
+### Unit Testing
+
+- Use `@Autowired` with beans you don't manage or when the real implementation is required
+- Use `MockitoBean` to mock dependencies of the class
+
+### Coverage
+
+- Maven dependency `org.jacoco`
+- Run `mvn clean test`
+- Argument `-D spring.profiles.active=dev` if needed
+- Check results in `target/site/jacoco/index.html` on browser i.e.

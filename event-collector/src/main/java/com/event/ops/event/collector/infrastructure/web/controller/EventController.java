@@ -2,6 +2,7 @@ package com.event.ops.event.collector.infrastructure.web.controller;
 
 import com.event.ops.event.collector.application.service.EventServiceImpl;
 import com.event.ops.event.collector.infrastructure.web.dto.EventRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<String> processEvent(@Valid @RequestBody EventRequest eventRequest) {
+    public ResponseEntity<String> processEvent(@Valid @RequestBody EventRequest eventRequest) throws JsonProcessingException {
         eventService.pushEvent(eventRequest);
 
         return ResponseEntity.ok("Event received");
