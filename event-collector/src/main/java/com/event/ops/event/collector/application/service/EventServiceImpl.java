@@ -22,7 +22,7 @@ public class EventServiceImpl {
         this.objectMapper = objectMapper;
     }
 
-    public void pushEvent(EventRequest eventRequest) {
+    public void pushEvent(EventRequest eventRequest) throws JsonProcessingException {
         Event event = new Event();
 
         event.setEventName(eventRequest.getName());
@@ -30,12 +30,7 @@ public class EventServiceImpl {
         event.setUserId(eventRequest.getUserId());
         event.setMetadata(eventRequest.getMetadata());
 
-        try {
-            eventProducer.sendMessage("event-processor", objectMapper.writeValueAsString(event));
-            log.info("Event sent to topic 'event-processor': {}", event);
-
-        } catch (JsonProcessingException e) {
-            log.error(e.getMessage());
-        }
+        eventProducer.sendMessage("event-processor", objectMapper.writeValueAsString(event));
+        log.info("Event sent to topic 'event-processor': {}", event);
     }
 }
