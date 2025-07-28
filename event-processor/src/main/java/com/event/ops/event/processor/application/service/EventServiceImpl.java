@@ -3,6 +3,7 @@ package com.event.ops.event.processor.application.service;
 import com.event.ops.event.processor.application.ports.EventService;
 import com.event.ops.event.processor.infrastructure.persistence.EventEntity;
 import com.event.ops.event.processor.infrastructure.persistence.EventRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +23,10 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void processEvent(String message) {
-        try {
-            EventEntity event = objectMapper.readValue(message, EventEntity.class);
-            eventRepository.save(event);
+    public void processEvent(String message) throws JsonProcessingException {
+        EventEntity event = objectMapper.readValue(message, EventEntity.class);
+        eventRepository.save(event);
 
-            log.info("Event saved successfully");
-
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
+        log.info("Event saved successfully");
     }
 }

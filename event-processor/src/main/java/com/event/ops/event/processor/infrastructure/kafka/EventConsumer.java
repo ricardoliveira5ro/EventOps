@@ -1,6 +1,7 @@
 package com.event.ops.event.processor.infrastructure.kafka;
 
 import com.event.ops.event.processor.application.service.EventServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ public class EventConsumer {
     }
 
     @KafkaListener(topics = "event-processor", groupId = "event-processor-group")
-    public void listen(String message) {
+    public void listen(String message) throws JsonProcessingException {
         eventService.processEvent(message);
     }
 }
