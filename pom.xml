@@ -12,6 +12,7 @@
     <modules>
         <module>event-collector</module>
         <module>event-processor</module>
+        <module>search</module>
     </modules>
 
     <properties>
