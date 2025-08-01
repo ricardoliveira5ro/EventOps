@@ -1,0 +1,9 @@
+CREATE TABLE T_EVENT (
+    id UUID PRIMARY KEY,
+    event_name VARCHAR(255),
+    timestamp TIMESTAMP,
+    user_id VARCHAR(255),
+    metadata TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

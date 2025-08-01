@@ -13,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@Table(name = "event")
+@Table(name = "T_EVENT")
 public class EventEntity {
 
     @Id
