@@ -5,6 +5,12 @@
 - Maven dependency `spring-kafka`
 - Hosting in `confluent.cloud`
 
+### Flyway
+
+- Files should follow prefix convention `V[1]__`
+- Run `mvn flyway:migrate -D flyway.url=[URL] -D flyway.user=[USER] -D flyway.password=[PASSWORD]`
+- Change hibernate to validate and not update `spring.jpa.hibernate.ddl-auto=validate`
+
 ### Environment Variables
 
 - Maven dependency `dotenv-java`
