@@ -1,4 +1,4 @@
-package com.event.ops.event.processor.infrastructure.persistence;
+package com.event.ops.database.converter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

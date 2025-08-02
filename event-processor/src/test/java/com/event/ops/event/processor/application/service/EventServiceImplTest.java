@@ -1,6 +1,6 @@
 package com.event.ops.event.processor.application.service;
 
-import com.event.ops.event.processor.infrastructure.persistence.EventEntity;
+import com.event.ops.database.entity.EventEntity;
 import com.event.ops.event.processor.infrastructure.persistence.EventRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.MediaType;
 
 import java.time.Instant;
 import java.util.Map;
@@ -20,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 public class EventServiceImplTest {
