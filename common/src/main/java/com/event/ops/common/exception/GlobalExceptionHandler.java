@@ -1,4 +1,4 @@
-package com.event.ops.search.infrastructure.web.exception;
+package com.event.ops.common.exception;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;

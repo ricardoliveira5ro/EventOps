@@ -1,5 +1,6 @@
-package com.event.ops.search.infrastructure.persistence;
+package com.event.ops.database.entity;
 
+import com.event.ops.database.converter.EventMetaDataConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

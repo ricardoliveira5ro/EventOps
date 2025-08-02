@@ -1,5 +1,6 @@
 package com.event.ops.event.processor.infrastructure.persistence;
 
+import com.event.ops.database.converter.EventMetaDataConverter;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;

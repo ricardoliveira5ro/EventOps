@@ -1,7 +1,7 @@
 package com.event.ops.event.processor.application.service;
 
+import com.event.ops.database.entity.EventEntity;
 import com.event.ops.event.processor.application.ports.EventService;
-import com.event.ops.event.processor.infrastructure.persistence.EventEntity;
 import com.event.ops.event.processor.infrastructure.persistence.EventRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
