@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.event.ops.event.processor","com.event.ops.common"})
 @EntityScan(basePackages = "com.event.ops.database.entity")
 public class EventProcessorApplication {
 

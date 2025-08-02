@@ -1,4 +1,4 @@
-package com.event.ops.event.processor.infrastructure.web.exception;
+package com.event.ops.common.exception;
 
 import lombok.Getter;
 
