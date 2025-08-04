@@ -14,11 +14,7 @@ import java.util.UUID;
 public interface EventRepository extends JpaRepository<EventEntity, UUID> {
     Long countByEventName(String eventName);
 
-    @Query(value = "SELECT DATE(e.timestamp) AS date, COUNT(1) AS total " +
-                    "FROM t_event e " +
-                    "WHERE (:eventName IS NULL OR e.event_name = :eventName) " +
-                    "GROUP BY DATE(e.timestamp) " +
-                    "ORDER BY DATE(e.timestamp) DESC",
-            nativeQuery = true)
+    @Query(value = "SELECT event_date AS date, total FROM V_DAILY_EVENT_COUNT WHERE (:eventName IS NULL OR event_name = :eventName) " +
+                    "ORDER BY event_date DESC", nativeQuery = true)
     List<IEventCount> aggregateByDateAndEventName(@Param("eventName") String eventName);
 }
