@@ -4,9 +4,11 @@ import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication(scanBasePackages = {"com.event.ops.search","com.event.ops.common"})
 @EntityScan(basePackages = "com.event.ops.database.entity")
+@EnableCaching
 public class SearchApplication {
 
 	public static void main(String[] args) {
@@ -14,6 +16,9 @@ public class SearchApplication {
 
 		System.setProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
 		System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
+		System.setProperty("REDIS_HOST", dotenv.get("REDIS_HOST"));
+		System.setProperty("REDIS_USERNAME", dotenv.get("REDIS_USERNAME"));
+		System.setProperty("REDIS_PASSWORD", dotenv.get("REDIS_PASSWORD"));
 
 		SpringApplication.run(SearchApplication.class, args);
 	}
