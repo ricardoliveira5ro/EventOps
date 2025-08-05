@@ -6,6 +6,7 @@ import com.event.ops.search.infrastructure.persistence.EventRepository;
 import com.event.ops.search.infrastructure.web.dto.DailyResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,11 +33,12 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
+    @Cacheable(value = "dailyAggregate", key = "#p0")
     public List<DailyResponse> dailyAggregate(String eventName) {
         List<IEventCount> list = eventRepository.aggregateByDateAndEventName(eventName);
 
         return list.stream()
-                .map(ievent -> new DailyResponse(ievent.getDate(), ievent.getTotal()))
+                .map(i -> new DailyResponse(i.getDate().toString(), i.getTotal()))
                 .toList();
     }
 }
