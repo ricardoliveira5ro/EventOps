@@ -11,6 +11,14 @@
 - Run `mvn flyway:migrate -D flyway.url=[URL] -D flyway.user=[USER] -D flyway.password=[PASSWORD]`
 - Change hibernate to validate and not update `spring.jpa.hibernate.ddl-auto=validate`
 
+### Cache / Redis
+
+- `@EnableCaching` on the application runner
+- `@Cacheable(value = "dailyAggregate", key = "#p0")` annotation to try to use cache, `p0` means parameter 0 (first)
+- `@CacheEvict(value = "dailyAggregate", key = "#event.eventName")` annotation to clear existent cache for this key
+- `@CachePut(value = "dailyAggregate", key = "#event.eventName")` annotation to update cache
+- Some data types i.e. `java.time.LocalDate` need to be registered as JavaTimeModule for Jackson in object mapper. In this case it was simpler to cache the date as string
+
 ### Environment Variables
 
 - Maven dependency `dotenv-java`
