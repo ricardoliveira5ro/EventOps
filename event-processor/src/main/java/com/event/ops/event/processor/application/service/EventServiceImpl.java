@@ -5,6 +5,9 @@ import com.event.ops.event.processor.application.ports.EventService;
 import com.event.ops.event.processor.infrastructure.persistence.EventRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
@@ -20,21 +23,36 @@ public class EventServiceImpl implements EventService {
     private final ObjectMapper objectMapper;
     private final CacheManager cacheManager;
 
+    private final Counter counter;
+    private final Timer timer;
+    private final MeterRegistry meterRegistry;
+
     @Autowired
-    public EventServiceImpl(EventRepository eventRepository, ObjectMapper objectMapper, CacheManager cacheManager) {
+    public EventServiceImpl(EventRepository eventRepository, ObjectMapper objectMapper, CacheManager cacheManager, MeterRegistry meterRegistry) {
         this.eventRepository = eventRepository;
         this.objectMapper = objectMapper;
         this.cacheManager = cacheManager;
+
+        this.meterRegistry = meterRegistry;
+        this.counter = meterRegistry.counter("event.processor.consumed");
+        this.timer = meterRegistry.timer("event.processor.latency");
     }
 
     @Override
     public void processEvent(String message) throws JsonProcessingException {
-        EventEntity event = objectMapper.readValue(message, EventEntity.class);
-        eventRepository.save(event);
+        counter.increment();
 
-        // Using cacheManager instead of @CacheEvict because the key -> 'event' does not exist before running
-        Objects.requireNonNull(cacheManager.getCache("dailyAggregate")).evict(event.getEventName());
+        Timer.Sample sample = Timer.start();
+        try {
+            EventEntity event = objectMapper.readValue(message, EventEntity.class);
+            eventRepository.save(event);
 
-        log.info("Event saved successfully");
+            // Using cacheManager instead of @CacheEvict because the key -> 'event' does not exist before running
+            Objects.requireNonNull(cacheManager.getCache("dailyAggregate")).evict(event.getEventName());
+
+            log.info("Event saved successfully");
+        } finally {
+            sample.stop(timer);
+        }
     }
 }

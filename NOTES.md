@@ -19,6 +19,17 @@
 - `@CachePut(value = "dailyAggregate", key = "#event.eventName")` annotation to update cache
 - Some data types i.e. `java.time.LocalDate` need to be registered as JavaTimeModule for Jackson in object mapper. In this case it was simpler to cache the date as string
 
+### Micrometer & Prometheus & Grafana
+
+- Micrometer: Java library to collect metrics counters (requests, errors), timers (latency), gauges
+- Prometheus: Open-source system that pulls metrics from services and stores them (`/actuator/prometheus`)
+- Grafana: Visualization tool for metrics (works with Prometheus), trend visibility
+
+### Structured Logging
+
+- Machine-parsable in JSON or key-value format, easily searchable, filterable
+- Logback or Logstash
+
 ### Environment Variables
 
 - Maven dependency `dotenv-java`
