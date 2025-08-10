@@ -4,7 +4,7 @@ import com.event.ops.auth.application.ports.AuthService;
 import com.event.ops.auth.domain.model.Client;
 import com.event.ops.auth.infrastructure.mapper.ClientMapper;
 import com.event.ops.auth.infrastructure.persistence.ClientRepository;
-import com.event.ops.auth.infrastructure.security.JWTProvider;
+import com.event.ops.common.security.JWTProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

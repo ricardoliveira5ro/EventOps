@@ -1,4 +1,4 @@
-package com.event.ops.auth.infrastructure.security;
+package com.event.ops.common.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
