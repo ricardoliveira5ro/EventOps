@@ -5,9 +5,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication(scanBasePackages = {"com.event.ops.search","com.event.ops.common"})
 @EntityScan(basePackages = "com.event.ops.database.entity")
+@PropertySource({"classpath:security.properties","classpath:redis.properties"})
 @EnableCaching
 public class SearchApplication {
 

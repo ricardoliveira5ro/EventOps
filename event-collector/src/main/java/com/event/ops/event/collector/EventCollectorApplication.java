@@ -3,8 +3,10 @@ package com.event.ops.event.collector;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.PropertySource;
 
-@SpringBootApplication(scanBasePackages = {"com.event.ops.event.collector","com.event.ops.common.exception"})
+@SpringBootApplication(scanBasePackages = {"com.event.ops.event.collector","com.event.ops.common.exception","com.event.ops.common.security"})
+@PropertySource("classpath:security.properties")
 public class EventCollectorApplication {
 
 	public static void main(String[] args) {

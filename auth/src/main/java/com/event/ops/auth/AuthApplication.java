@@ -5,9 +5,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.PropertySource;
 
-@SpringBootApplication(scanBasePackages = {"com.event.ops.auth","com.event.ops.common.exception"})
+@SpringBootApplication(scanBasePackages = {"com.event.ops.auth","com.event.ops.common.exception","com.event.ops.common.security"})
 @EntityScan(basePackages = "com.event.ops.database.entity")
+@PropertySource("classpath:security.properties")
 public class AuthApplication {
 
 	public static void main(String[] args) {
