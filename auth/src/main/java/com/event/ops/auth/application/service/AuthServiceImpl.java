@@ -4,6 +4,7 @@ import com.event.ops.auth.application.ports.AuthService;
 import com.event.ops.auth.domain.model.Client;
 import com.event.ops.auth.infrastructure.mapper.ClientMapper;
 import com.event.ops.auth.infrastructure.persistence.ClientRepository;
+import com.event.ops.common.exception.UnauthorizedException;
 import com.event.ops.common.security.JWTProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,13 +32,13 @@ public class AuthServiceImpl implements AuthService {
     public String authenticate(String clientId, String clientSecret) {
         Client client = clientRepository.findByClientId(clientId)
                             .map(clientMapper::mapToDomain)
-                            .orElseThrow(() -> new RuntimeException("Client not found")); // Custom Exception
+                            .orElseThrow(() -> new UnauthorizedException("Client not found"));
 
         if (!client.isActive())
-            throw new RuntimeException("Client is not active, contact your admin"); // Custom Exception
+            throw new UnauthorizedException("Client is not active, contact your admin");
 
         if (!passwordEncoder.matches(clientSecret, client.getClientSecret()))
-            throw new RuntimeException("Unable to authenticate"); // Custom Exception
+            throw new UnauthorizedException("Unable to authenticate");
 
 
         return jwtProvider.generateToken(clientId);
