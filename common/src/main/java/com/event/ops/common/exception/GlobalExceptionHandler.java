@@ -29,36 +29,53 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Counter.builder("service.errors")
-                .tag("service", applicationName)
-                .tag("exception", ex.getClass().getSimpleName())
-                .register(meterRegistry)
-                .increment();
+        countErrorMetric(ex);
 
         List<String> details = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .toList();
 
-        return new ResponseEntity<>(new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(), "Validation failed", details), HttpStatus.UNPROCESSABLE_ENTITY);
+        return buildErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY, "Validation failed", details, ex);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorResponse> unauthorizedExceptions(UnauthorizedException ex) {
+        countErrorMetric(ex);
+
+        List<String> details = List.of(ex.getClass().getSimpleName() + ": " + ex.getMessage());
+
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Not authorized to perform this action", details, ex);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex) {
+        countErrorMetric(ex);
+
+        List<String> details = List.of(ex.getClass().getSimpleName() + ": " + ex.getMessage());
+
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "An unexpected error occurred", details, ex);
+    }
+
+    // ----------------------------------------------------------------------------------------------------------------- //
+
+    private void countErrorMetric(Exception ex) {
         Counter.builder("service.errors")
                 .tag("service", applicationName)
                 .tag("exception", ex.getClass().getSimpleName())
                 .register(meterRegistry)
                 .increment();
+    }
 
-        List<String> details = List.of(ex.getClass().getSimpleName() + ": " + ex.getMessage());
-
-        List<String> stackTrace = null;
+    private List<String> buildStackTrace(Exception ex) {
         if ("dev".equalsIgnoreCase(activeProfile)) {
-            stackTrace = Arrays.stream(ex.getStackTrace())
+            return Arrays.stream(ex.getStackTrace())
                     .map(StackTraceElement::toString)
                     .toList();
         }
+        return null;
+    }
 
-        return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "An unexpected error occurred", details, stackTrace), HttpStatus.BAD_REQUEST);
+    private ResponseEntity<ErrorResponse> buildErrorResponse(HttpStatus status, String message, List<String> details, Exception ex) {
+        return new ResponseEntity<>(new ErrorResponse(status.value(), message, details, buildStackTrace(ex)), status);
     }
 }

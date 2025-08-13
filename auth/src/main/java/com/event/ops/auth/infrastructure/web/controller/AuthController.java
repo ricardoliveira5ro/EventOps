@@ -6,6 +6,7 @@ import com.event.ops.auth.infrastructure.web.dto.LoginRequest;
 import com.event.ops.auth.infrastructure.web.dto.LoginResponse;
 import com.event.ops.auth.infrastructure.web.dto.RegisterClientRequest;
 import com.event.ops.auth.infrastructure.web.dto.RegisterClientResponse;
+import com.event.ops.common.exception.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,9 +37,8 @@ public class AuthController {
 
     @PostMapping("/register-client")
     public ResponseEntity<?> registerUser(HttpServletRequest request, @RequestBody RegisterClientRequest registerClientRequest) {
-        if (!adminApiKey.equals(request.getHeader("X-Admin-Key"))) {
-            throw new RuntimeException("This action is not allowed"); // Custom exception
-        }
+        if (!adminApiKey.equals(request.getHeader("X-Admin-Key")))
+            throw new UnauthorizedException("Contact your admin");
 
         Client client = authService.registerClient(registerClientRequest.getClientName());
 
