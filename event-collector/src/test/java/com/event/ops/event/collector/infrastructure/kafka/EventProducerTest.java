@@ -24,8 +24,8 @@ public class EventProducerTest {
     @Test
     void sendMessage() {
         String topic = "mock-topic";
-        String message = "{\"eventName\":\"user_registered\",\"timestamp\":\"%s\",\"userId\":\"tester\"," +
-                "\"metadata\":{\"email\":\"tester@example.com\",\"referralCode\":\"REF123\",\"signupSource\":\"mobile\"}}";
+        String message = "{\"eventName\":\"user_registered\",\"timestamp\":\"%s\"," +
+                "\"metadata\":{\"email\":\"tester@example.com\",\"referralCode\":\"REF123\",\"signupSource\":\"mobile\"}},\"clientKey\":\"tester-key\"";
 
         eventProducer.sendMessage(topic, message);
 

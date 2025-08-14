@@ -1,5 +1,6 @@
 package com.event.ops.event.collector.infrastructure.web.controller;
 
+import com.event.ops.auth.application.service.CurrentClientService;
 import com.event.ops.event.collector.application.service.EventServiceImpl;
 import com.event.ops.event.collector.infrastructure.web.dto.EventRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class EventControllerTest {
 
     @Autowired
@@ -35,13 +36,16 @@ public class EventControllerTest {
     @MockitoBean
     private EventServiceImpl eventService;
 
+    @MockitoBean
+    private CurrentClientService currentClientService;
+
     private EventRequest request = new EventRequest();
 
     @BeforeEach
     void setUp() {
         request = new EventRequest();
         request.setName("user_registered");
-        request.setUserId("tester");
+        request.setClientKey("tester-key");
         request.setTimestamp(Instant.now());
         request.setMetadata(Map.of("email", "tester@example.com",
                 "referralCode", "REF123",
@@ -50,6 +54,8 @@ public class EventControllerTest {
 
     @Test
     public void processEvent() throws Exception {
+        when(currentClientService.getClientKey()).thenReturn(request.getClientKey());
+
         mockMvc.perform(post("/api/events")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
