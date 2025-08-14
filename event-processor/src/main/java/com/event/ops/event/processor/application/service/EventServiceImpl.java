@@ -28,7 +28,6 @@ public class EventServiceImpl implements EventService {
 
     private final Counter counter;
     private final Timer timer;
-    private final MeterRegistry meterRegistry;
 
     @Autowired
     public EventServiceImpl(EventRepository eventRepository, CurrentClientService currentClientService, ObjectMapper objectMapper, CacheManager cacheManager, MeterRegistry meterRegistry) {
@@ -37,7 +36,6 @@ public class EventServiceImpl implements EventService {
         this.objectMapper = objectMapper;
         this.cacheManager = cacheManager;
 
-        this.meterRegistry = meterRegistry;
         this.counter = meterRegistry.counter("event.processor.consumed");
         this.timer = meterRegistry.timer("event.processor.latency");
     }

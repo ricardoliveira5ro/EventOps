@@ -22,7 +22,10 @@ public class EventProcessorApplicationTest {
                 "DB_USERNAME=event-ops-test",
                 "DB_PASSWORD=superadminunittests",
                 "KAFKA_USERNAME=test_user",
-                "KAFKA_PASSWORD=test_pass"
+                "KAFKA_PASSWORD=test_pass",
+                "REDIS_HOST=redis-host-test",
+                "REDIS_USERNAME=redis-user-test",
+                "REDIS_PASSWORD=redis-pass-test"
         ));
 
         EventProcessorApplication.main(new String[]{});

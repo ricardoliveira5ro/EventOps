@@ -19,6 +19,8 @@ class EventCollectorApplicationTest {
         Path envFile = envDir.resolve(".env");
 
         Files.write(envFile, List.of(
+            "DB_USERNAME=event-ops-test",
+            "DB_PASSWORD=superadminunittests",
             "KAFKA_USERNAME=test_user",
             "KAFKA_PASSWORD=test_pass"
         ));

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import java.time.Instant;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class EventServiceImplTest {
     @Autowired
     private EventServiceImpl eventService;
 
-    @MockitoBean
+    @MockitoSpyBean
     private ObjectMapper objectMapper;
 
     @MockitoBean
@@ -35,16 +36,16 @@ public class EventServiceImplTest {
 
         EventRequest request = new EventRequest();
         request.setName("user_registered");
-        request.setUserId("tester");
+        request.setClientKey("tester-key");
         request.setTimestamp(timestamp);
         request.setMetadata(Map.of("email", "tester@example.com",
                                     "referralCode", "REF123",
                                 "signupSource", "mobile"));
 
-        String expected = String.format("{\"eventName\":\"user_registered\",\"timestamp\":\"%s\",\"userId\":\"tester\"," +
-                "\"metadata\":{\"email\":\"tester@example.com\",\"referralCode\":\"REF123\",\"signupSource\":\"mobile\"}}", timestamp);
+        String expected = String.format("{\"eventName\":\"user_registered\",\"timestamp\":\"%s\"," +
+                "\"metadata\":{\"email\":\"tester@example.com\",\"referralCode\":\"REF123\",\"signupSource\":\"mobile\"}},\"clientKey\":\"tester-key\"", timestamp);
 
-        when(objectMapper.writeValueAsString(any(Event.class))).thenReturn(expected);
+        doReturn(expected).when(objectMapper).writeValueAsString(any(Event.class));
 
         eventService.pushEvent(request);
 
@@ -56,8 +57,8 @@ public class EventServiceImplTest {
         EventRequest request = new EventRequest();
         request.setName("user_registered");
 
-        when(objectMapper.writeValueAsString(any(Event.class)))
-                .thenThrow(new JsonProcessingException("Serialization failed") {});
+        doThrow(new JsonProcessingException("Serialization failed") {})
+                .when(objectMapper).writeValueAsString(any(Event.class));
 
         assertThrows(JsonProcessingException.class, () -> {
             eventService.pushEvent(request);

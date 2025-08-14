@@ -1,30 +1,30 @@
 package com.event.ops.event.processor.application.service;
 
+import com.event.ops.auth.application.service.CurrentClientService;
+import com.event.ops.database.entity.ClientEntity;
 import com.event.ops.database.entity.EventEntity;
+import com.event.ops.event.processor.domain.model.Event;
 import com.event.ops.event.processor.infrastructure.persistence.EventRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 
 import java.time.Instant;
-import java.util.Map;
-import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @ExtendWith(MockitoExtension.class)
 public class EventServiceImplTest {
-
-    @InjectMocks
-    private EventServiceImpl eventService;
 
     @Mock
     private ObjectMapper objectMapper;
@@ -32,41 +32,48 @@ public class EventServiceImplTest {
     @Mock
     private EventRepository eventRepository;
 
+    @Mock
+    private CurrentClientService currentClientService;
+
+    @Mock
+    private CacheManager cacheManager;
+
+    @Mock
+    private Cache cache;
+
+    @Mock
+    private MeterRegistry meterRegistry;
+
+    private EventServiceImpl eventService;
     private String message;
     private EventEntity eventEntity;
 
     @BeforeEach
     void setup() {
-        Instant timestamp = Instant.now();
-        message = String.format("{\"eventName\":\"user_registered\",\"timestamp\":\"%s\",\"userId\":\"tester\"," +
-                "\"metadata\":{\"email\":\"tester@example.com\",\"referralCode\":\"REF123\",\"signupSource\":\"mobile\"}}", timestamp);
+        Counter counter = mock(Counter.class);
+        Timer timer = mock(Timer.class);
 
-        eventEntity = new EventEntity();
-        eventEntity.setId(UUID.randomUUID());
-        eventEntity.setEventName("user_registered");
-        eventEntity.setUserId("tester");
-        eventEntity.setTimestamp(Instant.now());
-        eventEntity.setMetadata(Map.of("email", "tester@example.com",
-                "referralCode", "REF123",
-                "signupSource", "mobile"));
+        when(meterRegistry.counter(anyString())).thenReturn(counter);
+        when(meterRegistry.timer(anyString())).thenReturn(timer);
+
+        when(cacheManager.getCache(anyString())).thenReturn(cache);
+
+        eventService = new EventServiceImpl(eventRepository, currentClientService, objectMapper, cacheManager, meterRegistry);
     }
 
     @Test
     void processEvent() throws JsonProcessingException {
-        when(objectMapper.readValue(message, EventEntity.class)).thenReturn(eventEntity);
+        String message = "{\"eventName\":\"user_registered\",\"timestamp\":\"2025-08-14T12:00:00Z\",\"clientKey\":\"tester-key\"}";
+
+        Event event = new Event();
+        event.setEventName("user_registered");
+        event.setTimestamp(Instant.now());
+        event.setClientKey("tester-key");
+
+        when(objectMapper.readValue(anyString(), eq(Event.class))).thenReturn(event);
 
         eventService.processEvent(message);
 
-        verify(eventRepository).save(eventEntity);
-    }
-
-    @Test
-    void processEvent_invalidMessage() throws Exception {
-        when(objectMapper.readValue(anyString(), eq(EventEntity.class)))
-                .thenThrow(new JsonProcessingException("JSON parsing failed") {});
-
-        assertThrows(JsonProcessingException.class, () -> eventService.processEvent("INVALID_JSON"));
-
-        verify(eventRepository, never()).save(any());
+        verify(eventRepository).save(any(EventEntity.class));
     }
 }

@@ -25,7 +25,7 @@ public class EventConsumerTest {
     void listen() throws JsonProcessingException {
         Instant timestamp = Instant.now();
         String message = String.format("{\"eventName\":\"user_registered\",\"timestamp\":\"%s\",\"userId\":\"tester\"," +
-                "\"metadata\":{\"email\":\"tester@example.com\",\"referralCode\":\"REF123\",\"signupSource\":\"mobile\"}}", timestamp);
+                "\"metadata\":{\"email\":\"tester@example.com\",\"referralCode\":\"REF123\",\"signupSource\":\"mobile\"},\"clientKey\":\"tester-key\"}", timestamp);
 
         eventConsumer.listen(message);
 
