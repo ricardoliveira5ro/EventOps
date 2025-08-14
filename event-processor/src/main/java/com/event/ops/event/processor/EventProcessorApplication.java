@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.PropertySource;
 
-@SpringBootApplication(scanBasePackages = {"com.event.ops.event.processor","com.event.ops.common"})
+@SpringBootApplication(scanBasePackages = {"com.event.ops.event.processor","com.event.ops.common","com.event.ops.auth"})
 @EntityScan(basePackages = "com.event.ops.database.entity")
 @PropertySource({"classpath:security.properties","classpath:redis.properties"})
 @EnableCaching

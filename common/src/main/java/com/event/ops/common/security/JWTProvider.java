@@ -28,12 +28,12 @@ public class JWTProvider {
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
-    public String generateToken(String clientId) {
+    public String generateToken(String clientKey) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
         return Jwts.builder()
-                .subject(clientId)
+                .subject(clientKey)
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(key)
@@ -49,7 +49,7 @@ public class JWTProvider {
         }
     }
 
-    public String getClientIdFromJWT(String token) {
+    public String getClientKeyFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .verifyWith((SecretKey) key)
                 .build()

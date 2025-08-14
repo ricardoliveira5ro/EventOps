@@ -12,7 +12,9 @@ import java.util.UUID;
 
 @Repository
 public interface EventRepository extends JpaRepository<EventEntity, UUID> {
-    Long countByEventName(String eventName);
+    Long countByClientIdAndEventName(UUID clientId, String eventName);
+
+    Long countByClient_Id(UUID clientId);
 
     @Query(value = "SELECT event_date AS date, total FROM V_DAILY_EVENT_COUNT WHERE (:eventName IS NULL OR event_name = :eventName) " +
                     "ORDER BY event_date DESC", nativeQuery = true)

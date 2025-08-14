@@ -11,7 +11,7 @@ public class LoginRequest {
 
     @NotBlank
     @NotNull
-    private String clientId;
+    private String clientKey;
 
     @NotBlank
     @NotNull
@@ -20,7 +20,7 @@ public class LoginRequest {
     @Override
     public String toString() {
         return "LoginRequest{" +
-                "clientId='" + clientId + '\'' +
+                "clientKey='" + clientKey + '\'' +
                 ", clientSecret='" + clientSecret + '\'' +
                 '}';
     }

@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Client {
 
-    private String clientId;
+    private String clientKey;
     private String clientSecret;
     private String clientName;
     private boolean active;

@@ -7,6 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -20,8 +22,8 @@ public class ClientEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "client_id", unique = true, nullable = false)
-    private String clientId;
+    @Column(name = "client_key", unique = true, nullable = false)
+    private String clientKey;
 
     @Column(name = "client_secret", nullable = false)
     private String clientSecret;
@@ -31,6 +33,9 @@ public class ClientEntity {
 
     @Column(name = "active", nullable = false)
     private boolean active = true;
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EventEntity> events = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
