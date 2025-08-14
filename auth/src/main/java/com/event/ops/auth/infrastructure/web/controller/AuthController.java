@@ -30,7 +30,7 @@ public class AuthController {
 
     @PostMapping("/token")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-        String token = authService.authenticate(loginRequest.getClientId(), loginRequest.getClientSecret());
+        String token = authService.authenticate(loginRequest.getClientKey(), loginRequest.getClientSecret());
 
         return ResponseEntity.ok(new LoginResponse(token, "1 hour"));
     }
@@ -42,6 +42,6 @@ public class AuthController {
 
         Client client = authService.registerClient(registerClientRequest.getClientName());
 
-        return ResponseEntity.ok(new RegisterClientResponse(client.getClientId(), client.getClientSecret()));
+        return ResponseEntity.ok(new RegisterClientResponse(client.getClientKey(), client.getClientSecret()));
     }
 }

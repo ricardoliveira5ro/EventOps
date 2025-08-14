@@ -9,16 +9,16 @@ public class ClientMapper {
 
     public Client mapToDomain(ClientEntity entity) {
         return new Client(
-                entity.getClientId(),
-                entity.getClientSecret(),
-                entity.getClientName(),
-                entity.isActive()
+            entity.getClientKey(),
+            entity.getClientSecret(),
+            entity.getClientName(),
+            entity.isActive()
         );
     }
 
     public ClientEntity mapToEntity(Client domain) {
         ClientEntity entity = new ClientEntity();
-        entity.setClientId(domain.getClientId());
+        entity.setClientKey(domain.getClientKey());
         entity.setClientSecret(domain.getClientSecret());
         entity.setClientName(domain.getClientName());
         entity.setActive(domain.isActive());

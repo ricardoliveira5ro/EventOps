@@ -1,5 +1,6 @@
 package com.event.ops.event.collector.infrastructure.web.controller;
 
+import com.event.ops.auth.application.service.CurrentClientService;
 import com.event.ops.event.collector.application.service.EventServiceImpl;
 import com.event.ops.event.collector.infrastructure.web.dto.EventRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,12 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class EventController {
 
     private final EventServiceImpl eventService;
+    private final CurrentClientService currentClientService;
     private final Counter counter;
     private final Timer timer;
 
     @Autowired
-    public EventController(EventServiceImpl eventService, MeterRegistry meterRegistry) {
+    public EventController(EventServiceImpl eventService, CurrentClientService currentClientService, MeterRegistry meterRegistry) {
         this.eventService = eventService;
+        this.currentClientService = currentClientService;
         this.counter = meterRegistry.counter("event.collector.requests");
         this.timer = meterRegistry.timer("event.collector.latency");
     }
@@ -35,6 +38,7 @@ public class EventController {
 
         return timer.record(() -> {
             try {
+                eventRequest.setClientKey(currentClientService.getClientKey());
                 eventService.pushEvent(eventRequest);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);

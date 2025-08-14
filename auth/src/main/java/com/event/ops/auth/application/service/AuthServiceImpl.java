@@ -29,8 +29,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String authenticate(String clientId, String clientSecret) {
-        Client client = clientRepository.findByClientId(clientId)
+    public String authenticate(String clientKey, String clientSecret) {
+        Client client = clientRepository.findByClientKey(clientKey)
                             .map(clientMapper::mapToDomain)
                             .orElseThrow(() -> new UnauthorizedException("Client not found"));
 
@@ -41,15 +41,15 @@ public class AuthServiceImpl implements AuthService {
             throw new UnauthorizedException("Unable to authenticate");
 
 
-        return jwtProvider.generateToken(clientId);
+        return jwtProvider.generateToken(clientKey);
     }
 
     @Override
     public Client registerClient(String clientName) {
-        String clientId = UUID.randomUUID().toString();
+        String clientKey = UUID.randomUUID().toString();
         String rawClientSecret = UUID.randomUUID().toString().replace("-", "");
 
-        Client client = new Client(clientId, passwordEncoder.encode(rawClientSecret), clientName, true);
+        Client client = new Client(clientKey, passwordEncoder.encode(rawClientSecret), clientName, true);
 
         clientRepository.save(clientMapper.mapToEntity(client));
         client.setClientSecret(rawClientSecret);

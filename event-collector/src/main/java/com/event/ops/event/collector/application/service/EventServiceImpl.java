@@ -27,8 +27,8 @@ public class EventServiceImpl {
 
         event.setEventName(eventRequest.getName());
         event.setTimestamp(eventRequest.getTimestamp());
-        event.setUserId(eventRequest.getUserId());
         event.setMetadata(eventRequest.getMetadata());
+        event.setClientKey(eventRequest.getClientKey());
 
         eventProducer.sendMessage("event-processor", objectMapper.writeValueAsString(event));
         log.info("Event sent to topic 'event-processor': {}", event);

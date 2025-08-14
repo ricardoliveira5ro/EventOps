@@ -16,23 +16,21 @@ public class EventRequest {
     @NotNull
     private String name;
 
-    @NotBlank
-    @NotNull
-    private String userId;
-
     @NotNull
     private Map<String, Object> metadata;
 
     @NotNull
     private Instant timestamp;
 
+    private String clientKey;
+
     @Override
     public String toString() {
         return "EventRequest{" +
                 "name='" + name + '\'' +
-                ", userId='" + userId + '\'' +
                 ", metadata=" + metadata +
                 ", timestamp=" + timestamp +
+                ", clientKey='" + clientKey + '\'' +
                 '}';
     }
 }

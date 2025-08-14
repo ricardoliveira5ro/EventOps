@@ -28,8 +28,9 @@ public class EventEntity {
     @Column(name = "timestamp")
     private Instant timestamp;
 
-    @Column(name = "user_id")
-    private String userId;
+    @ManyToOne
+    @JoinColumn(name = "client_id", nullable = false)
+    private ClientEntity client;
 
     @Convert(converter = EventMetaDataConverter.class)
     @Column(name = "metadata", columnDefinition = "TEXT")

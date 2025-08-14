@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RegisterClientResponse {
 
-    private String clientId;
+    private String clientKey;
     private String clientSecret;
 }
