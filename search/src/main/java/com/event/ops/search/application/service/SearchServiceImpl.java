@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -36,9 +37,10 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    @Cacheable(value = "dailyAggregate", key = "#p0")
+    @Cacheable(value = "dailyAggregate", key = "#p0", condition="#p0!=null")
     public List<DailyResponse> dailyAggregate(String eventName) {
-        List<IEventCount> list = eventRepository.aggregateByDateAndEventName(eventName);
+        UUID clientId = currentClientService.getCurrentClient().getId();
+        List<IEventCount> list = eventRepository.aggregateByDateAndEventName(eventName, clientId);
 
         return list.stream()
                 .map(i -> new DailyResponse(i.getDate().toString(), i.getTotal()))
