@@ -16,7 +16,8 @@ public interface EventRepository extends JpaRepository<EventEntity, UUID> {
 
     Long countByClient_Id(UUID clientId);
 
-    @Query(value = "SELECT event_date AS date, total FROM V_DAILY_EVENT_COUNT WHERE (:eventName IS NULL OR event_name = :eventName) " +
-                    "ORDER BY event_date DESC", nativeQuery = true)
-    List<IEventCount> aggregateByDateAndEventName(@Param("eventName") String eventName);
+    @Query(value = "SELECT event_date AS date, total FROM V_DAILY_EVENT_COUNT " +
+                        "WHERE (:eventName IS NULL OR event_name = :eventName) AND client_id = :clientId " +
+                        "ORDER BY event_date DESC", nativeQuery = true)
+    List<IEventCount> aggregateByDateAndEventName(@Param("eventName") String eventName, @Param("clientId") UUID clientId);
 }
