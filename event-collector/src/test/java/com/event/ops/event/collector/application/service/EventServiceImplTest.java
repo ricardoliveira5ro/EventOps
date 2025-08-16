@@ -49,7 +49,7 @@ public class EventServiceImplTest {
 
         eventService.pushEvent(request);
 
-        verify(eventProducer).sendMessage("event-processor", expected);
+        verify(eventProducer).sendMessage("processor", expected);
     }
 
     @Test

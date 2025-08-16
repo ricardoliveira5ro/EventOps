@@ -30,7 +30,7 @@ public class EventServiceImpl {
         event.setMetadata(eventRequest.getMetadata());
         event.setClientKey(eventRequest.getClientKey());
 
-        eventProducer.sendMessage("event-processor", objectMapper.writeValueAsString(event));
-        log.info("Event sent to topic 'event-processor': {}", event);
+        eventProducer.sendMessage("processor", objectMapper.writeValueAsString(event));
+        log.info("Event sent to topic 'processor': {}", event);
     }
 }

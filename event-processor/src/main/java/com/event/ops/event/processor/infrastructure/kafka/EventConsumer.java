@@ -14,7 +14,7 @@ public class EventConsumer {
         this.eventService = eventService;
     }
 
-    @KafkaListener(topics = "event-processor", groupId = "event-processor-group")
+    @KafkaListener(topics = "processor", groupId = "event-processor-group")
     public void listen(String message) throws JsonProcessingException {
         eventService.processEvent(message);
     }

@@ -23,10 +23,11 @@ Microservice architecture to event ingestion and processing system. Multiple Mav
 ### 📚 Tech Stack
 
 - Java 21 + Spring Boot 3.5.4
-- Kafka
+- Kafka (consumer concurrency for parallel message processing)
 - PostgreSQL + JPA
 - Flyway
 - Redis
 - Spring Security + JWT
 - Spring Actuator + Prometheus
+- Spring AOP (logging)
 - JUnit + Jacoco
