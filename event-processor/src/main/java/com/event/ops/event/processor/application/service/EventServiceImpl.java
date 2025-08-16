@@ -16,6 +16,8 @@ import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 @Slf4j
@@ -25,6 +27,7 @@ public class EventServiceImpl implements EventService {
     private final CurrentClientService currentClientService;
     private final ObjectMapper objectMapper;
     private final CacheManager cacheManager;
+    private final ExecutorService executor = Executors.newFixedThreadPool(10);
 
     private final Counter counter;
     private final Timer timer;
@@ -41,27 +44,32 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void processEvent(String message) throws JsonProcessingException {
+    public void processEvent(String message) {
         counter.increment();
 
-        Timer.Sample sample = Timer.start();
-        try {
-            Event event = objectMapper.readValue(message, Event.class);
+        executor.submit(() -> {
+            Timer.Sample sample = Timer.start();
+            try {
+                Event event = objectMapper.readValue(message, Event.class);
 
-            EventEntity eventEntity = new EventEntity();
-            eventEntity.setEventName(event.getEventName());
-            eventEntity.setMetadata(event.getMetadata());
-            eventEntity.setTimestamp(event.getTimestamp());
-            eventEntity.setClient(currentClientService.getCurrentClient(event.getClientKey()));
+                EventEntity eventEntity = new EventEntity();
+                eventEntity.setEventName(event.getEventName());
+                eventEntity.setMetadata(event.getMetadata());
+                eventEntity.setTimestamp(event.getTimestamp());
+                eventEntity.setClient(currentClientService.getCurrentClient(event.getClientKey()));
 
-            eventRepository.save(eventEntity);
+                eventRepository.save(eventEntity);
 
-            // Using cacheManager instead of @CacheEvict because the key -> 'event' does not exist before running
-            Objects.requireNonNull(cacheManager.getCache("dailyAggregate")).evict(eventEntity.getEventName());
+                // Using cacheManager instead of @CacheEvict because the key -> 'event' does not exist before running
+                Objects.requireNonNull(cacheManager.getCache("dailyAggregate")).evict(eventEntity.getEventName());
 
-            log.info("Event saved successfully");
-        } finally {
-            sample.stop(timer);
-        }
+                log.info("Event saved successfully");
+            } catch (JsonProcessingException exception) {
+                throw new RuntimeException(exception.getMessage());
+            } finally {
+                sample.stop(timer);
+            }
+        });
+
     }
 }
